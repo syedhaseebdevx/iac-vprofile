@@ -31,37 +31,37 @@ jobs:
         working-directory: ./terraform
 
     steps:
-        - name: Checkout Source code
-          uses: actions/checkout@v4
+      - name: Checkout Source code
+        uses: actions/checkout@v4
 
     steps:
-        - name: terraform setup with specified version
-          uses: hashicorp/setup-terraform@v2
- #         with:
+      - name: terraform setup with specified version
+        uses: hashicorp/setup-terraform@v2
+ #        with:
  #           terraform_version: 
 
 
     steps:
-        - name: "terraform init"
-          id: init
-          run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+      - name: "terraform init"
+        id: init
+        run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
 
-        - name: terraform format
-          id: fmt
-          run: terraform fmt -check
+      - name: terraform format
+        id: fmt
+        run: terraform fmt -check
 
-        - name:
-          id: validate
-          run: terraform validate
+      - name:
+        id: validate
+        run: terraform validate
 
-        - name: terraform plan
-          id: plan
-          run: terraform plan -no-color -input=false -out planfile
-          continue-on-error: true
+      - name: terraform plan
+        id: plan
+        run: terraform plan -no-color -input=false -out planfile
+        continue-on-error: true
 
-        - name: terraform plan status
-          if: steps.plan.outcome == 'failure'
-          run: exit 1
+      - name: terraform plan status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
 
 
 
