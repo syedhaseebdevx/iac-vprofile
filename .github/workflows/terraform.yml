@@ -6,7 +6,7 @@ on:
       - stage
     paths:
       - terraform/**
-  pull_requests:
+  pull_request:
     branches:
       - main
     paths:
@@ -21,27 +21,27 @@ env:
   AWS_REGION: us-east-1
   EKS_CLUSTER: gitops
 
-  jobs:
-    terraform:
-      name: "Apply terraform code changes"
-      runs-on: ubuntu-latest
-      defaults: 
-        run:
-          shell: bash
-          working-directory: ./terraform
+jobs:
+  terraform:
+    name: "Apply terraform code changes"
+    runs-on: ubuntu-latest
+    defaults: 
+      run:
+        shell: bash
+        working-directory: ./terraform
 
-      steps:
+    steps:
         - name: Checkout Source code
           uses: actions/checkout@v4
 
-      steps:
+    steps:
         - name: terraform setup with specified version
           uses: hashicorp/setup-terraform@v2
  #         with:
  #           terraform_version: 
 
 
-      steps:
+    steps:
         - name: "terraform init"
           id: init
           run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
