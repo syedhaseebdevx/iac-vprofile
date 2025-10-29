@@ -1,5 +1,7 @@
 name: "Vprofile IAC"
+
 on:
+  workflow_dispatch:    # <-- allows manual run
   push:
     branches:
       - main
@@ -13,19 +15,17 @@ on:
       - terraform/**
 
 env:
-  # Credentials for deployment on AWS
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  # Bucket for TF State
   BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE }}
   AWS_REGION: us-east-2
   EKS_CLUSTER: gitops
 
 jobs:
   terraform:
-    name: "Apply terraform code changes"
+    name: "Destroy Terraform resources"
     runs-on: ubuntu-latest
-    defaults: 
+    defaults:
       run:
         shell: bash
         working-directory: ./terraform
@@ -34,15 +34,14 @@ jobs:
       - name: Checkout Source code
         uses: actions/checkout@v4
 
-      - name: terraform setup with specified version
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-        with: 
-         terraform_version: 1.6.3
+        with:
+          terraform_version: 1.6.3
 
-      - name: "terraform init"
+      - name: Terraform Init
         id: init
         run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
 
       - name: Terraform Destroy
-        working-directory: ${{ env.TF_WORKING_DIR }} 
         run: terraform destroy -auto-approve -input=false
