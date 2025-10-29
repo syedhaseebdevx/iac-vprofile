@@ -34,14 +34,11 @@ jobs:
       - name: Checkout Source code
         uses: actions/checkout@v4
 
-    steps:
       - name: terraform setup with specified version
         uses: hashicorp/setup-terraform@v2
  #        with:
  #           terraform_version: 
 
-
-    steps:
       - name: "terraform init"
         id: init
         run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
